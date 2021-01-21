@@ -19,14 +19,6 @@ This module was tested with the following.
 
 ## How to Install
 
-### Option 1: Install from PSGallery
-
-`Install-Module ExCmdReport -Scope AllUsers`
-
-### Option 2: Download from GitHub and install manually
-
-Use this if you can't install the module from PSGallery.
-
 1. Download or clone from the [GitHub Repository](https://github.com/junecastillote/ExCmdReport).
 2. Extract the zip and run `.\InstallMe.ps1` in PowerShell.
 
