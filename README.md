@@ -4,7 +4,7 @@ This module uses the `Search-AdminAuditLog` Exchange CmdLet under the hood. This
 
 The output can be saved as a pre-formatted HTML file with the option to send as email to specified recipients.
 
-![Sample Email Report](https://github.com/junecastillote/ExCmdReport/blob/master/images/SampleEmailReport.png)
+![Sample Email Report](images/SampleEmailReport.png)
 
 ## Requirements
 
@@ -30,7 +30,7 @@ Use this if you can't install the module from PSGallery.
 1. Download or clone from the [GitHub Repository](https://github.com/junecastillote/ExCmdReport).
 2. Extract the zip and run `.\InstallMe.ps1` in PowerShell.
 
-![Install Selection](https://github.com/junecastillote/ExCmdReport/blob/master/images/SampleInstall.png)
+![Install Selection](images/SampleInstall.png)
 
 ## Usage Examples
 
@@ -45,7 +45,7 @@ Get-ExCmdLog -searchParamHash @{
 } -Verbose -resolveAdminName
 ```
 
-![Get Admin Audit Log Entries](https://github.com/junecastillote/ExCmdReport/blob/master/images/SampleOutput01.png)
+![Get Admin Audit Log Entries](images/SampleOutput01.png)
 
 ### Example 2: Get Admin Audit Log Entries and Send Email Report
 
@@ -70,13 +70,11 @@ Get-ExCmdLog -searchParamHash @{
 } -Verbose -resolveAdminName | Write-ExCmdReport @report -Verbose
 ```
 
-![Get Admin Audit Log Entries and Send Email Report](https://github.com/junecastillote/ExCmdReport/blob/master/images/SampleOutput02.png)
+![Get Admin Audit Log Entries and Send Email Report](images/SampleOutput02.png)
 
 ## Functions
 
 There are four functions included in this version. For details, follow the links below.
 
-* [Get-ExCmdLog](https://github.com/junecastillote/ExCmdReport/blob/master/Doc/Get-ExCmdLog.md)
-* [Write-ExCmdReport](https://github.com/junecastillote/ExCmdReport/blob/master/Doc/Write-ExCmdReport.md)
-* [Connect-ExOP](https://github.com/junecastillote/ExCmdReport/blob/master/Doc/Connect-ExOP.md)
-* [Connect-ExOL](https://github.com/junecastillote/ExCmdReport/blob/master/Doc/Connect-ExOL.md)
+* [Get-ExCmdLog](Doc/Get-ExCmdLog.md)
+* [Write-ExCmdReport](Doc/Write-ExCmdReport.md)
