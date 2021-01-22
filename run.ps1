@@ -1,6 +1,10 @@
+# Install the module
+Remove-Module ExCmdReport -ErrorAction SilentlyContinue
+.\InstallMe.ps1 -ModulePath 'C:\Program Files\WindowsPowerShell\Modules'
+
+$exoCredential = Import-CliXml -Path c:\temp\cred.xml
 $tenantName = 'poshlab.onmicrosoft.com'
 $organization = 'PowerShell Lab'
-$exoCredential = Import-CliXml -Path c:\temp\cred.xml
 $today = Get-Date -Format "yyyy-MM-dd"
 $ReportFile = "$($env:windir)\temp\$($tenantName)_ExCmdReport_$($today).html"
 
@@ -10,22 +14,16 @@ Get-PSSession -Name "Exchange*" | ForEach-Object {
 }
 # Clear the console
 Clear-Host
-
-Remove-Module ExCmdReport -ErrorAction SilentlyContinue
-.\InstallMe.ps1 -ModulePath 'C:\Program Files\WindowsPowerShell\Modules'
-Remove-Module ExCmdReport -ErrorAction SilentlyContinue
-Import-Module ExCmdReport
-
 Connect-ExchangeOnline -Credential $exoCredential -Organization $tenantName -ShowBanner:$false
 
 $searchParamHash = [ordered]@{
-    StartDate      = ((Get-Date).AddDays(-1))
+    StartDate      = ((Get-Date).AddDays(-10))
     EndDate        = ((Get-Date))
     ExternalAccess = $false
 }
 
 $reportHash = @{
-    #TruncateLongValue = 50
+    TruncateLongValue = 50
     ReportFile   = $ReportFile
     organization = $Organization
 }

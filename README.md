@@ -1,72 +1,102 @@
 # ExCmdReport Module
 
-This module uses the `Search-AdminAuditLog` Exchange CmdLet under the hood. This can be used to retrieve Exchange Admin Audit Logs from Exchange Online or Exchange Server On-Premises. It uses pagination automatically so that it can retrieve any number of results.
+- [Overview](#overview)
+- [Requirements](#requirements)
+- [How to Install](#how-to-install)
+- [Usage Examples](#usage-examples)
+  - [Example 1: Get Admin Audit Log Entries from the last ten (10) days](#example-1-get-admin-audit-log-entries-from-the-last-ten-10-days)
+  - [Example 2: Get Admin Audit Log Entries and Write the HTML Report](#example-2-get-admin-audit-log-entries-and-write-the-html-report)
+  - [Example 3: Generate the Report and Send the Report by Email](#example-3-generate-the-report-and-send-the-report-by-email)
+- [Functions](#functions)
 
-The output can be saved as a pre-formatted HTML file with the option to send as email to specified recipients.
+## Overview
 
-![Sample Email Report](images/SampleEmailReport.png)
+This module uses the `Search-AdminAuditLog` Exchange CmdLet under the hood. This can be used to retrieve Exchange Admin Audit Logs from Exchange Online or Exchange Server On-Premises. The output can then be exported as a pre-formatted HTML file with the option to send as email to specified recipients.
+
+![Sample Email Report](images/SampleHTMLReport.png)
 
 ## Requirements
 
 This module was tested with the following.
 
-* Windows PowerShell 5.1
-* Exchange Online (Office 365)
-* Exchange Server 2016 (On-Premises).
-  * May work with Exchange 2013 and Exchange 2019.
-* Remote PowerShell session must be established.
-* Exchange Admin Audit Logging must be enabled. Otherwise, there will be no data to return.
+- Windows PowerShell 5.1. The ExchangeOnlineManagement module does not play well with PowerShell 7+. This may change in the future, but for now, stick with Windows PowerShell 5.1.
+- Exchange Online (Office 365)
+- Exchange Server 2016 (On-Premises).
+- May work with Exchange 2013 and Exchange 2019.
+- Remote PowerShell session must be established.
+- Exchange Admin Audit Logging must be enabled. Otherwise, there will be no data to return.
 
 ## How to Install
 
-1. Download or clone from the [GitHub Repository](https://github.com/junecastillote/ExCmdReport).
+1. Download the latest [release](https://github.com/junecastillote/ExCmdReport/releases).
 2. Extract the zip and run `.\InstallMe.ps1` in PowerShell.
 
 ![Install Selection](images/SampleInstall.png)
 
 ## Usage Examples
 
-### Example 1: Get Admin Audit Log Entries
+### Example 1: Get Admin Audit Log Entries from the last ten (10) days
 
 ```PowerShell
-# Get ALL log entries
-Get-ExCmdLog -searchParamHash @{
-    StartDate      = '10/01/2019'
-    EndDate        = '10/10/2019'
+# Get admin audit log entries
+$events = Get-ExCmdLog -searchParamHash  @{
+    StartDate      = ((Get-Date).AddDays(-10))
+    EndDate        = ((Get-Date))
     ExternalAccess = $false
-} -Verbose -resolveAdminName
+} -resolveAdminName -InformationAction Continue
 ```
 
 ![Get Admin Audit Log Entries](images/SampleOutput01.png)
 
-### Example 2: Get Admin Audit Log Entries and Send Email Report
+### Example 2: Get Admin Audit Log Entries and Write the HTML Report
 
 ```PowerShell
-# Build report parameters
-$report = @{
-    SendEmail = $true
-    From = 'admin@domain.com'
-    To = 'user1@domain.com','user2@domain.com'
-    smtpServer = 'smtp.office365.com'
-    port = 587
-    UseSSL = $true
-    Credential = (Get-Credential)
-    TruncateLongValue = 50
-}
-
-# Get Audit Logs and then send
-Get-ExCmdLog -searchParamHash @{
-    StartDate      = '10/01/2019'
-    EndDate        = '10/10/2019'
+# Get admin audit log entries
+$events = Get-ExCmdLog -searchParamHash  @{
+    StartDate      = ((Get-Date).AddDays(-10))
+    EndDate        = ((Get-Date))
     ExternalAccess = $false
-} -Verbose -resolveAdminName | Write-ExCmdReport @report -Verbose
+} -resolveAdminName -InformationAction Continue
+
+# Convert the log object to HTML code
+$events | Write-ExCmdReport -ReportFile .\admin_audit_log.html -InformationAction Continue
 ```
 
-![Get Admin Audit Log Entries and Send Email Report](images/SampleOutput02.png)
+![Get Admin Audit Log Entries and Write the HTML report](images/SampleOutput02.png)
+
+### Example 3: Generate the Report and Send the Report by Email
+
+```PowerShell
+# Get admin audit log entries
+$events = Get-ExCmdLog -searchParamHash  @{
+    StartDate      = ((Get-Date).AddDays(-10))
+    EndDate        = ((Get-Date))
+    ExternalAccess = $false
+} -resolveAdminName -InformationAction Continue
+
+# Convert the log object to HTML code
+$events | Write-ExCmdReport -ReportFile .\admin_audit_log.html -InformationAction Continue
+
+# Send the HTML report
+$email = @{
+    From       = "Mailer365@poshlab.ml"
+    To         = "june@poshlab.ml"
+    Subject    = "Exchange Admin Audit Log Report - PowerShell Lab"
+    BodyAsHtml = $true
+    Body       = Get-Content C:\ExCmdReport\admin_audit_log.html -raw
+    SmtpServer = "smtp.office365.com"
+    Port       = 587
+    UseSSL     = $true
+    Credential = $credential
+}
+Send-MailMessage @email
+```
+
+![Get Admin Audit Log Entries and Write the HTML report](images/SampleOutput02.png)
 
 ## Functions
 
 There are four functions included in this version. For details, follow the links below.
 
-* [Get-ExCmdLog](Doc/Get-ExCmdLog.md)
-* [Write-ExCmdReport](Doc/Write-ExCmdReport.md)
+- [Get-ExCmdLog](Doc/Get-ExCmdLog.md)
+- [Write-ExCmdReport](Doc/Write-ExCmdReport.md)

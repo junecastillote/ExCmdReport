@@ -136,7 +136,7 @@ Function Write-ExCmdReport {
             try {
                 $htmlBody | Out-File $ReportFile -Encoding UTF8 -Force
                 Write-Information "> Because you asked me to, I saved the HTML report to a file."
-                Write-Information "> You can find the report at $ReportFile."
+                Write-Information "> You can find the report at $((Resolve-Path $ReportFile).Path)."
                 # return $htmlBody
             }
             catch {

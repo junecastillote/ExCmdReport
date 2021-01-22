@@ -69,7 +69,7 @@ Function Get-ExCmdLog {
 
 	if ($auditLogs.count -gt 0) {
 		if ($resolveAdminName) {
-			Write-Information "> Please wait while I try to put a name on these callers' login. Remember, you asked me to do this."
+			Write-Information "> Please wait while I try to put names on the callers' login. Remember, you asked me to do this."
 			Write-Information "> ........................................."
 			$uniqueCallerAdminName = @()
 

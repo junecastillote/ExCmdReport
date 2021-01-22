@@ -2,6 +2,8 @@
 
 The `Write-ExCmdReport` takes the output of the `Get-ExCmdLog` function as input. It then creates an HTML report. It can also send the report by email if specified.
 
+## Syntax
+
 ```PowerShell
 Write-ExCmdReport
     [-InputObject] <Object>
@@ -15,7 +17,6 @@ Write-ExCmdReport
 
 ```PowerShell
 Get-ExCmdLog | Write-ExCmdReport -ReportFile C:\Temp\auditlogreport.html
-}
 ```
 
 In this example, `Write-ExCmdReport` accepts the output of `Get-ExCmdLog` as a pipeline input and saves the report to *`C:\\Temp\auditlogreport.html`*.
@@ -30,11 +31,11 @@ Write-ExCmdReport -InputObject $logs -ReportFile C:\Temp\auditlogreport.html
 
 In this example, the output of the `Get-ExCmdLog` is stored in the `$logs` variable. Then the `$logs` is passed to `Write-ExCmdReport` as the value of the parameter `-InputObject`.
 
-## Write-ExCmdReport Parameters
+## Parameters
 
 ### -InputObject
 
-The output of the `Get-ExCmdLog` function.
+The output object of the `Get-ExCmdLog` function.
 
 ```yaml
 Type: PSCustomObject
