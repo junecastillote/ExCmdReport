@@ -1,8 +1,11 @@
 # ExCmdReport Module
 
 - [Overview](#overview)
+- [Release Notes](#release-notes)
 - [Requirements](#requirements)
 - [How to Install](#how-to-install)
+  - [Option 1: Install to a PSModulePath](#option-1-install-to-a-psmodulepath)
+  - [Option 2: Install to any folder](#option-2-install-to-any-folder)
 - [Usage Examples](#usage-examples)
   - [Example 1: Get Admin Audit Log Entries from the last ten (10) days](#example-1-get-admin-audit-log-entries-from-the-last-ten-10-days)
   - [Example 2: Get Admin Audit Log Entries and Write the HTML Report](#example-2-get-admin-audit-log-entries-and-write-the-html-report)
@@ -13,7 +16,11 @@
 
 This module uses the `Search-AdminAuditLog` Exchange CmdLet under the hood. This can be used to retrieve Exchange Admin Audit Logs from Exchange Online or Exchange Server On-Premises. The output can then be exported as a pre-formatted HTML file with the option to send as email to specified recipients.
 
-![Sample Email Report](images/SampleHTMLReport.png)
+![Sample HTML Report](images/SampleHTMLReport.png)
+
+## Release Notes
+
+Find the [release notes here](Doc/release_notes.md).
 
 ## Requirements
 
@@ -28,10 +35,27 @@ This module was tested with the following.
 
 ## How to Install
 
+### Option 1: Install to a PSModulePath
+
 1. Download the latest [release](https://github.com/junecastillote/ExCmdReport/releases).
 2. Extract the zip and run `.\InstallMe.ps1` in PowerShell.
+   ![Install Selection](images/SampleInstall.png)
 
-![Install Selection](images/SampleInstall.png)
+3. Import the module:
+
+   ```PowerShell
+   Import-Module ExCmdReport
+   ```
+
+### Option 2: Install to any folder
+
+1. Download the latest [release](https://github.com/junecastillote/ExCmdReport/releases).
+2. Extract the zip.
+3. Import the module file:
+
+   ```PowerShell
+   Import-Module .\ExCmdReport.psd1
+   ```
 
 ## Usage Examples
 
@@ -93,6 +117,8 @@ Send-MailMessage @email
 ```
 
 ![Get Admin Audit Log Entries and Write the HTML report](images/SampleOutput02.png)
+
+![Sample Email Report](images/SampleEmailReport.png)
 
 ## Functions
 

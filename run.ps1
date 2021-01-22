@@ -1,6 +1,6 @@
-# Install the module
+# Import
 Remove-Module ExCmdReport -ErrorAction SilentlyContinue
-.\InstallMe.ps1 -ModulePath 'C:\Program Files\WindowsPowerShell\Modules'
+Import-Module '.\ExCmdReport.psd1'
 
 $exoCredential = Import-CliXml -Path c:\temp\cred.xml
 $tenantName = 'poshlab.onmicrosoft.com'
