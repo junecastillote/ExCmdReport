@@ -48,7 +48,8 @@ try {
     Write-Output ""
     Write-Output "Success. Installed to $ModulePath"
     Write-Output ""
-    Import-Module ExCmdReport
+    #Import-Module ExCmdReport
+    Get-ChildItem -Recurse $ModulePath | Unblock-File -Confirm:$false
 }
 catch {
     Write-Output ""
