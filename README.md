@@ -122,7 +122,7 @@ Send-MailMessage @email
 
 ## Functions
 
-There are four functions included in this version. For details, follow the links below.
+There are two functions included in this version. For details, follow the links below.
 
 - [Get-ExCmdLog](Doc/Get-ExCmdLog.md)
 - [Write-ExCmdReport](Doc/Write-ExCmdReport.md)
