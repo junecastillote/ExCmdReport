@@ -69,7 +69,8 @@ Function Write-ExCmdReport {
     Process {
         foreach ($item in $InputObject) {
             if ($item.CallerAdminName) {
-                $Caller = $item.CallerAdminName
+                # $Caller = $item.CallerAdminName
+                $Caller = "$($item.CallerAdminName) [$($item.Caller)]"
             }
             else {
                 $Caller = $item.Caller
