@@ -79,7 +79,7 @@ Function Get-ExCmdLog {
 			# Create a hashtable of Caller and CallerAdminName
 			$uniqueCaller | ForEach-Object {
 				try {
-					$CallerAdminName = (Get-User ($_.Caller) -ErrorAction Stop).Name
+					$CallerAdminName = (Get-User ($_.Caller) -ErrorAction Stop).DisplayName
 				}
 				catch {
 					$CallerAdminName = $null
