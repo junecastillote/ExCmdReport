@@ -36,7 +36,7 @@ Function Write-ExCmdReport {
                 Write-Information "> Found it! Your organization name is $($Organization)"
             }
             catch [System.Management.Automation.CommandNotFoundException] {
-                Write-Information "> It looks like you forgot to connect to Remote Exchange PowerShell. You should do that first before asking me to stuff for you."
+                Write-Information "> It looks like you forgot to connect to Remote Exchange PowerShell. You should do that first before asking me to do stuff for you."
                 Write-Information "> Or you can just specify your organization name next time so that I don't have to look for it for you. The parameter is -Organization <organization name>."
                 return $null
             }
@@ -136,7 +136,7 @@ Function Write-ExCmdReport {
         if ($ReportFile) {
             try {
                 $htmlBody | Out-File $ReportFile -Encoding UTF8 -Force
-                Write-Information "> Because you asked me to, I saved the HTML report to a file."
+                Write-Information "> I saved the HTML report to a file, you majesty."
                 Write-Information "> You can find the report at $((Resolve-Path $ReportFile).Path)."
                 # return $htmlBody
             }
