@@ -65,7 +65,7 @@ Function Get-ExCmdLog {
 		While ($temp.count -eq 1000)
 	}
 	$auditLogs | Add-Member -MemberType NoteProperty -Name CallerAdminName -Value $null
-	Write-Information "> I found a total of $($auditLogs.count) events in the audit log."
+	Write-Information "> I found a total of $($auditLogs.count) events in the [unfiltered] audit log."
 
 	if ($auditLogs.count -gt 0) {
 		if ($resolveAdminName) {
