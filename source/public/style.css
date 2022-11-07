@@ -29,7 +29,7 @@
     background-color:#fff;
     text-align:left;
     vertical-align:top;
-    color: #7a7a52;
+    color: #252522;
 
 }
 #tbl th.section
@@ -52,7 +52,7 @@
     text-align:left;
     vertical-align:top;
     font-weight: lighter;
-    color: #7a7a52;
+    color: #252522;
     width: fit-content;
 }
 #tbl td.wrap
@@ -91,7 +91,7 @@
     padding-bottom:0px;
     padding-left:0px;
     padding-right:0px;
-    color: #7a7a52;
+    color: #252522;
 }
 .red
 {
