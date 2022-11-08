@@ -17,9 +17,10 @@ Function Get-ExCmdLog {
         #>
 		[parameter()]
 		[hashtable]$searchParamHash = @{
-			StartDate = ((Get-Date).AddHours(-24))
-			EndDate   = ((Get-Date))
-			ExternalAccess = $False
+			StartDate      = ((Get-Date).AddHours(-24))
+			EndDate        = ((Get-Date))
+			ExternalAccess = $false
+			IsSuccess      = $true
 		},
 		[parameter()]
 		[switch]$resolveAdminName
@@ -30,33 +31,39 @@ Function Get-ExCmdLog {
 		$null = (Get-OrganizationConfig -ErrorAction STOP).DisplayName
 	}
 	catch [System.Management.Automation.CommandNotFoundException] {
-		Write-Information "> It looks like you forgot to connect to Remote Exchange PowerShell. You should do that first before asking me to stuff for you."
+		Say "> It looks like you forgot to connect to Remote Exchange PowerShell. You should do that first before asking me to stuff for you."
 		return $null
 	}
 	catch {
-		Write-Information "> Something is wrong. You can see the error below. I can't tell you how to fix it, but you should fix it before asking me to stuff for you."
-		Write-Information $_.Exception.Message
+		Say "> Something is wrong. You can see the error below. You should fix it before asking me to try again."
+		Say $_.Exception.Message
 		return $null
 	}
 	#EndRegion
 
-	Write-Information "........................................."
-	Write-Information "> I'm using the search parameters you gave me:" | Out-Null
+	Say "........................................."
+	Say "> I'm using the search parameters you gave me:" | Out-Null
 	foreach ($i in $searchParamHash.Keys) {
-		Write-Information "> $($i) = $($searchParamHash.Item($i))"
+		Say "> $($i) = $($searchParamHash.Item($i))"
 	}
-	Write-Information ">........................................."
+	Say ">........................................."
 	$startIndex = 0
-	Write-Information "> Starting my search from index #$($startIndex+1)"
+	Say "> Starting my search from index #$($startIndex+1)"
 	$searchParamHash += @{StartIndex = $startIndex }
 
 	$auditLogs = Search-AdminAuditLog @searchParamHash
+
+	# Terminate script if there are no audit logs to report
+	if (!$auditLogs) {
+		Say "> The admin audit log between the time range you specified is empty. There's nothing to report."
+		return $null
+	}
 
 	if ($auditLogs.count -eq 1000) {
 		Do {
 			$startIndex += 1000
 			$searchParamHash.StartIndex = $startIndex
-			Write-Information "> Now I'm searching from index #$($startIndex+1)"
+			Say "> Now I'm searching from index #$($startIndex+1)"
 			$temp = Search-AdminAuditLog @searchParamHash
 			if ($temp.count -gt 0) {
 				$auditLogs += $temp
@@ -65,42 +72,36 @@ Function Get-ExCmdLog {
 		While ($temp.count -eq 1000)
 	}
 	$auditLogs | Add-Member -MemberType NoteProperty -Name CallerAdminName -Value $null
-	Write-Information "> I found a total of $($auditLogs.count) events in the [unfiltered] audit log."
+	Say "> I found a total of $($auditLogs.count) events in the [unfiltered] audit log."
 
-	if ($auditLogs.count -gt 0) {
-		if ($resolveAdminName) {
-			Write-Information "> Please wait while I try to put names on the callers' login. Remember, you asked me to do this."
-			Write-Information "> ........................................."
-			$uniqueCallerAdminName = @()
+	if ($resolveAdminName) {
+		Say "> Please wait while I try to put names on the callers' login. Remember, you asked me to do this."
+		Say "> ........................................."
+		$uniqueCallerAdminName = @()
 
-			# Get unique caller id from the result
-			$uniqueCaller = $auditLogs | Select-Object caller -Unique
+		# Get unique caller id from the result
+		$uniqueCaller = $auditLogs | Select-Object caller -Unique
 
-			# Create a hashtable of Caller and CallerAdminName
-			$uniqueCaller | ForEach-Object {
-				try {
-					$CallerAdminName = (Get-User ($_.Caller) -ErrorAction Stop).DisplayName
-				}
-				catch {
-					$CallerAdminName = $null
-				}
-
-				$callerObj = New-Object psobject -Property @{
-					Caller          = $_.Caller
-					CallerAdminName = $CallerAdminName
-				}
-				$uniqueCallerAdminName += $callerObj
+		# Create a hashtable of Caller and CallerAdminName
+		$uniqueCaller | ForEach-Object {
+			try {
+				$CallerAdminName = (Get-User ($_.Caller) -ErrorAction Stop).DisplayName
+			}
+			catch {
+				$CallerAdminName = $null
 			}
 
-			foreach ($i in $auditLogs) {
-				$i.CallerAdminName = ($uniqueCallerAdminName | Where-Object { $_.Caller -eq $i.Caller }).CallerAdminName
+			$callerObj = New-Object psobject -Property @{
+				Caller          = $_.Caller
+				CallerAdminName = $CallerAdminName
 			}
+			$uniqueCallerAdminName += $callerObj
 		}
-		# return the results
-		return $auditLogs
+
+		foreach ($i in $auditLogs) {
+			$i.CallerAdminName = ($uniqueCallerAdminName | Where-Object { $_.Caller -eq $i.Caller }).CallerAdminName
+		}
 	}
-	else {
-		# throw error and terminate
-		throw "$($MyInvocation.MyCommand.Name): There are ZERO admin audit log entries retrieved."
-	}
+	# return the results
+	return $auditLogs
 }
