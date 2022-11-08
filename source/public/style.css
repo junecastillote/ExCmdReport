@@ -53,7 +53,7 @@
     vertical-align:top;
     font-weight: lighter;
     color: #252522;
-    width: fit-content;
+    width:max-content;
 }
 #tbl td.wrap
 {
