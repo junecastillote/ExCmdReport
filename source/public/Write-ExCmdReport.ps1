@@ -23,27 +23,27 @@ Function Write-ExCmdReport {
     )
     Begin {
 
-        Write-Information '.........................................'
-        Write-Information "> I'm ready to start writing the report"
-        Write-Information '.........................................'
+        Say '.........................................'
+        Say "> I'm ready to start writing the report"
+        Say '.........................................'
 
         #Region - Is Exchange Connected?
         if (!($Organization)) {
-            Write-Information "> You did not specify the name of the organization. That probably means you want me to get it for you instead."
+            Say "> You did not specify the name of the organization. That probably means you want me to get it for you instead."
             try {
-                Write-Information "> Ok then, I'm trying to get your organization name now. Seriously, you ask too much."
+                Say "> Ok then, I'm trying to get your organization name now. Seriously, you ask too much."
                 $Organization = (Get-OrganizationConfig -ErrorAction STOP).DisplayName
-                Write-Information "> Found it! Your organization name is $($Organization)"
+                Say "> Found it! Your organization name is $($Organization)"
             }
             catch [System.Management.Automation.CommandNotFoundException] {
-                Write-Information "> It looks like you forgot to connect to Remote Exchange PowerShell. You should do that first before asking me to do stuff for you."
-                Write-Information "> Or you can just specify your organization name next time so that I don't have to look for it for you. The parameter is -Organization <organization name>."
+                Say "> It looks like you forgot to connect to Remote Exchange PowerShell. You should do that first before asking me to do stuff for you."
+                Say "> Or you can just specify your organization name next time so that I don't have to look for it for you. The parameter is -Organization <organization name>."
                 return $null
             }
             catch {
-                Write-Information "> Something is wrong. You can see the error below. I can't tell you how to fix it, but you should fix it before asking me to stuff for you."
-                Write-Information "> Or you can just specify your organization name next time so that I don't have to look for it for you. The parameter is -Organization <organization name>."
-                Write-Information $_.Exception.Message
+                Say "> Something is wrong. You can see the error below. I can't tell you how to fix it, but you should fix it before asking me to stuff for you."
+                Say "> Or you can just specify your organization name next time so that I don't have to look for it for you. The parameter is -Organization <organization name>."
+                Say $_.Exception.Message
                 return $null
             }
         }
@@ -76,7 +76,8 @@ Function Write-ExCmdReport {
                 $Caller = $item.Caller
             }
             $dateCollection += $item.RunDate
-            $html2 += '<tr><td>' + $i + '<td><b>Date: </b>' + (Get-Date $item.RunDate -Format "MMM-dd-yyyy hh:mm:ss tt") + '<br><b>Caller: </b>' + $Caller + '<br><b>Target: </b>' + $item.ObjectModified + '<br><b>Succeeded: </b>' + $item.Succeeded + '</td>'
+            # $html2 += '<tr><td>' + $i + '<td><b>Date: </b>' + (Get-Date $item.RunDate -Format "MMM-dd-yyyy hh:mm:ss tt") + '<br><b>Caller: </b>' + $Caller + '<br><b>Target: </b>' + $item.ObjectModified + '<br><b>Succeeded: </b>' + $item.Succeeded + '</td>'
+            $html2 += '<tr><td><b>Date: </b>' + (Get-Date $item.RunDate -Format "MMM-dd-yyyy hh:mm:ss tt") + '<br><b>Caller: </b>' + $Caller + '<br><b>Target: </b>' + $item.ObjectModified + '<br><b>Succeeded: </b>' + $item.Succeeded + '</td>'
             $html2 += '<td><b>' + $item.CmdLetName + '</b><br><br>'
             foreach ($param in $item.CmdletParameters) {
                 if ($TruncateLongValue) {
@@ -90,7 +91,8 @@ Function Write-ExCmdReport {
                 else {
                     $paramValue = $param.Value
                 }
-                $html2 += ('<b>' + $param.Name + '</b>' + ' = ' + $paramValue + '<br>')
+                # $html2 += ('<b>' + $param.Name + '</b>' + ' = ' + $paramValue + '<br>')
+                $html2 += ('<b>' + $param.Name + ':</b> ' + $paramValue + '<br>')
             }
             $html2 += '</td></tr>'
             $i = $i + 1
@@ -101,8 +103,8 @@ Function Write-ExCmdReport {
         $dateCollection = $dateCollection | Sort-Object
         $startDate = $dateCollection[0]
         $endDate = $dateCollection[-1]
-        Write-Information "> Your report covers the period of $($startDate) to $($endDate)"
-        Write-Information "> I am creating your HTML report now... in my memory."
+        Say "> Your report covers the period of $($startDate) to $($endDate)"
+        Say "> I am creating your HTML report now... in my memory."
         #$html1 = @()
         $html1 += '<html><head><title>' + $title + '</title>'
         $html1 += '<style type="text/css">'
@@ -111,24 +113,17 @@ Function Write-ExCmdReport {
         $html1 += '<body>'
         $html1 += '<table id="tbl">'
         $html1 += '<tr><td class="head"> </td></tr>'
-        $html1 += '<tr><th class="section">Exchange Admin Audit Log Report</th></tr>'
+        $html1 += '<tr><th class="section">Exchange Admin Command Audit Report</th></tr>'
         $html1 += '<tr><td class="head"><b>' + $Organization + '</b><br>' + $today + ' ' + $tz + '</td></tr>'
         $html1 += '<tr><td class="head"> </td></tr>'
         $html1 += '</table>'
         $html1 += '<table id="tbl">'
-        $html1 += '<tr><td></td><td>Run Details: (' + "$( Get-Date $startDate -Format "MMM-dd-yyyy hh:mm:ss tt") - $( Get-Date $endDate -Format "MMM-dd-yyyy hh:mm:ss tt")" + ')</td><td>Command and Parameters</td></tr>'
+        $html1 += '<tr><td><b>Run Details:</b> (' + "$( Get-Date $startDate -Format "MMM-dd-yyyy HH:mm:ss") - $( Get-Date $endDate -Format "MMM-dd-yyyy HH:mm:ss")" + ')</td><td><b>Commands and Parameters</b></td></tr>'
         $html3 += '</table>'
         $html3 += '<table id="tbl">'
         $html3 += '<tr><td class="head"> </td></tr>'
         $html3 += '<tr><td class="head"> </td></tr>'
-        $html3 += '<tr><td class="head"><b>Source: </b><i>' + $env:COMPUTERNAME + '</i><br>'
-        if ($ReportFile) {
-            $html3 += '<b>Report File: </b><i>' + (Resolve-Path $ReportFile).Path + '</i><br>'
-        }
-        else {
-            $html3 += '<b>Report File: </b><i>None specified</i><br>'
-        }
-        $html3 += '<a href="' + $ModuleInfo.ProjectURI.ToString() + '" target="_blank">' + $ModuleInfo.Name.ToString() + ' v' + $ModuleInfo.Version.ToString() + ' </a><br>'
+        $html3 += '<tr><td class="head"><a href="' + $ModuleInfo.ProjectURI.ToString() + '" target="_blank">' + $ModuleInfo.Name.ToString() + ' v' + $ModuleInfo.Version.ToString() + ' </td></a><br>'
         $html3 += '<tr><td class="head"> </td></tr>'
         $html3 += '</body></html>'
 
@@ -136,20 +131,20 @@ Function Write-ExCmdReport {
         if ($ReportFile) {
             try {
                 $htmlBody | Out-File $ReportFile -Encoding UTF8 -Force
-                Write-Information "> I saved the HTML report to a file, you majesty."
-                Write-Information "> You can find the report at $((Resolve-Path $ReportFile).Path)."
+                Say "> I saved the HTML report to a file, you majesty."
+                Say "> You can find the report at $((Resolve-Path $ReportFile).Path)."
                 # return $htmlBody
             }
             catch {
-                Write-Information "> Something is wrong. You can see the error below. Because of it I cannot save your report to file. Fix it."
-                Write-Information $_.Exception.Message
+                Say "> Something is wrong. You can see the error below. Because of it I cannot save your report to file. Fix it."
+                Say $_.Exception.Message
                 return $null
             }
         }
         else {
-            Write-Information "> I've created the report object for you, which is basically just an HTML code in my memory."
-            Write-Information "> If you wanted to save the report to an HTML file, you should use the -ReportFile <path to report.html> parameter."
-            Write-Information "> Or, you can just pipe the report out to file like ' | Out-File report.html'. But you should already know how to do that."
+            Say "> I've created the report object for you, which is basically just an HTML code in my memory."
+            Say "> If you wanted to save the report to an HTML file, you should use the -ReportFile <path to report.html> parameter."
+            Say "> Or, you can just pipe the report out to file like ' | Out-File report.html'. But you should already know how to do that."
             return $htmlBody
         }
     }
