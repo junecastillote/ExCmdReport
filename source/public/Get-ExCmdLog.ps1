@@ -31,7 +31,7 @@ Function Get-ExCmdLog {
 		$null = (Get-OrganizationConfig -ErrorAction STOP).DisplayName
 	}
 	catch [System.Management.Automation.CommandNotFoundException] {
-		Say "> It looks like you forgot to connect to Remote Exchange PowerShell. You should do that first before asking me to stuff for you."
+		Say "> It looks like you forgot to connect to Remote Exchange PowerShell. You should do that first before asking me to do stuff for you."
 		return $null
 	}
 	catch {
