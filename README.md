@@ -1,5 +1,13 @@
 # ExCmdReport Module
 
+> NOTE: The `Search-AdminAuditLog` has been officially depercated for Exchange Online, thus, **do not use this module for Exchange Online Admin anymore**. Instead, you can use the new module [PS-EXO-Admin-Audit-Log-Report](https://github.com/junecastillote/PS-EXO-Admin-Audit-Log-Report), explicitly for Exchange Online.
+> 
+> References:
+> - [Important Announcement: Deprecation of AdminAuditLog and MailboxAuditLog Cmdlets](https://techcommunity.microsoft.com/blog/microsoft-security-blog/important-announcement-deprecation-of-adminauditlog-and-mailboxauditlog-cmdlets/4036537)
+> - [Update on the Deprecation of Admin Audit Log Cmdlets](https://techcommunity.microsoft.com/blog/microsoft-security-blog/update-on-the-deprecation-of-admin-audit-log-cmdlets/4172019)
+
+---
+
 - [Overview](#overview)
 - [Release Notes](#release-notes)
 - [Requirements](#requirements)
@@ -126,3 +134,4 @@ There are two functions included in this version. For details, follow the links 
 
 - [Get-ExCmdLog](Doc/Get-ExCmdLog.md)
 - [Write-ExCmdReport](Doc/Write-ExCmdReport.md)
+
